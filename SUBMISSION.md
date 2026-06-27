@@ -12,6 +12,8 @@ This folder contains all the materials required for the Ajaia Full Stack Product
 ## What is Working
 - **Everything requested in the core requirements is fully functional.**
 - Document creation, editing, saving, and renaming via the Tiptap rich-text editor.
+- **Inline Commenting:** Highlight text and add persistent comments.
+- **PDF Export:** Export documents to a high-quality PDF format.
 - File upload integration (Turns `.txt` and `.md` files into rich-text documents instantly).
 - Sharing documents with specific users by email address.
 - Full database persistence and identity tracking via Supabase.

@@ -7,6 +7,8 @@ A lightweight, real-time collaborative document editor built for the Ajaia Full 
 ## Features Built
 - **Rich-text Editing:** Create, rename, and edit documents with headings, bold, italic, and lists using Tiptap. Auto-saves as you type.
 - **File Uploads:** Instantly convert local `.txt` and `.md` files into rich-text documents.
+- **Commenting System:** Highlight any text and attach a hoverable comment.
+- **High-Quality PDF Export:** Export the current document to a perfectly formatted PDF with a single click.
 - **Access Control:** Share documents with other users. Assign them either a "Viewer" or "Editor" role.
 - **Real-time Presence (Stretch Goal):** Live avatars appear in the header instantly when another user opens the same document. 
 
