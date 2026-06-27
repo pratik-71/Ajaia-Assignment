@@ -22,11 +22,15 @@ function AppRoutes() {
   );
 }
 
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 function App() {
   return (
     <AuthProvider>
       <Router>
         <AppRoutes />
+        <ToastContainer position="bottom-right" />
       </Router>
     </AuthProvider>
   );

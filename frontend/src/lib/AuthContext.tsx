@@ -1,41 +1,46 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { User, MOCK_USERS } from './db';
+import { supabase } from './supabase';
+import type { User, Session } from '@supabase/supabase-js';
 
 type AuthContextType = {
   user: User | null;
-  login: (id: string) => void;
-  logout: () => void;
+  session: Session | null;
+  loading: boolean;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const storedUserId = localStorage.getItem('mock_user_id');
-    if (storedUserId) {
-      const foundUser = MOCK_USERS.find(u => u.id === storedUserId);
-      if (foundUser) setUser(foundUser);
+    if (!supabase) {
+      setLoading(false);
+      return;
     }
+
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      setLoading(false);
+    });
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      setLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
-  const login = (id: string) => {
-    const foundUser = MOCK_USERS.find(u => u.id === id);
-    if (foundUser) {
-      setUser(foundUser);
-      localStorage.setItem('mock_user_id', id);
-    }
-  };
-
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem('mock_user_id');
-  };
-
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
-      {children}
+    <AuthContext.Provider value={{ user, session, loading }}>
+      {!loading && children}
     </AuthContext.Provider>
   );
 };

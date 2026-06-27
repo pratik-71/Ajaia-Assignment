@@ -1,10 +1,5 @@
 import { supabase } from './supabase';
 
-export type User = {
-  id: string;
-  name: string;
-};
-
 export type Document = {
   id: string;
   title: string;
@@ -18,12 +13,6 @@ export type Share = {
   document_id: string;
   user_id: string;
 };
-
-export const MOCK_USERS: User[] = [
-  { id: 'user-1', name: 'Alice (Engineer)' },
-  { id: 'user-2', name: 'Bob (Product Manager)' },
-  { id: 'user-3', name: 'Charlie (Designer)' },
-];
 
 // Local Storage Fallback implementation
 const getLocalDocs = (): Document[] => JSON.parse(localStorage.getItem('docs') || '[]');
@@ -71,18 +60,17 @@ export const db = {
   },
   
   createDocument: async (doc: Omit<Document, 'id' | 'created_at' | 'updated_at'>): Promise<Document> => {
-    const newDoc: Document = {
-      ...doc,
-      id: crypto.randomUUID(),
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    };
-    
     if (supabase) {
-      const { data, error } = await supabase.from('documents').insert(newDoc).select().single();
+      const { data, error } = await supabase.from('documents').insert(doc).select().single();
       if (error) throw error;
       return data;
     } else {
+      const newDoc: Document = {
+        ...doc,
+        id: typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(2, 15),
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
       const docs = getLocalDocs();
       docs.push(newDoc);
       saveLocalDocs(docs);
@@ -94,9 +82,23 @@ export const db = {
     updates.updated_at = new Date().toISOString();
     
     if (supabase) {
-      const { data, error } = await supabase.from('documents').update(updates).eq('id', id).select().single();
-      if (error) throw error;
-      return data;
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      
+      const response = await fetch(`http://localhost:5000/api/documents/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        },
+        body: JSON.stringify(updates)
+      });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Backend update failed: ${errorText}`);
+      }
+      return await response.json();
     } else {
       const docs = getLocalDocs();
       const idx = docs.findIndex(d => d.id === id);
