@@ -13,8 +13,8 @@ export const DocumentCard: React.FC<DocumentCardProps> = ({ document, onClick, o
   return (
     <div className="doc-card" onClick={() => onClick(document.document_uuid)} style={{ position: 'relative' }}>
       <div className="flex-row gap-2 mb-2">
-        <FileText size={18} color="var(--primary-color)" />
-        <div className="doc-title" style={{ margin: 0, paddingRight: '24px' }}>{document.title}</div>
+        <FileText size={18} color="var(--primary-color)" style={{ flexShrink: 0 }} />
+        <div className="doc-title" style={{ margin: 0, paddingRight: '24px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={document.title}>{document.title}</div>
       </div>
       <div className="doc-meta">
         Updated {new Date(document.updated_at).toLocaleDateString()}
@@ -22,8 +22,8 @@ export const DocumentCard: React.FC<DocumentCardProps> = ({ document, onClick, o
       
       {showDelete && onDelete && (
         <button 
-          className="btn-icon" 
-          style={{ position: 'absolute', top: '0.75rem', right: '0.75rem', color: 'var(--text-secondary)', padding: '0.25rem' }}
+          className="btn-icon danger" 
+          style={{ position: 'absolute', top: '0.75rem', right: '0.75rem', padding: '0.25rem' }}
           onClick={(e) => {
             e.stopPropagation();
             onDelete(document.document_uuid, e);

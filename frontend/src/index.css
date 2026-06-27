@@ -198,6 +198,10 @@ a:hover {
   background-color: var(--border-color);
   color: var(--primary-color);
 }
+.btn-icon.danger:hover {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: var(--error-color) !important;
+}
 
 
 .card {

@@ -266,7 +266,8 @@ export const EditorPage: React.FC = () => {
           }}
           disabled={!canEdit}
           placeholder="Document Title"
-          size={title ? Math.max(title.length, 10) : 16}
+          style={{ maxWidth: '350px', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}
+          title={title}
         />
         {canEdit && <PenLine size={16} className="title-edit-icon" />}
         {!canEdit && <span style={{ marginLeft: '12px', fontSize: '0.8rem', background: 'var(--bg-secondary)', padding: '2px 8px', borderRadius: '12px', color: 'var(--text-secondary)' }}>View Only</span>}

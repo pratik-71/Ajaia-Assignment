@@ -1,4 +1,5 @@
 import { supabase } from './supabase';
+import { API_BASE_URL } from '../config';
 
 export type Document = {
   document_uuid: string;
@@ -107,8 +108,7 @@ export const db = {
       const { data: { session } } = await supabase.auth.getSession();
       const token = session?.access_token;
       
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
-      const response = await fetch(`${backendUrl}/api/documents/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/api/documents/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -137,8 +137,7 @@ export const db = {
       const { data: { session } } = await supabase.auth.getSession();
       const token = session?.access_token;
       
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
-      const response = await fetch(`${backendUrl}/api/documents/${documentId}/share`, {
+      const response = await fetch(`${API_BASE_URL}/api/documents/${documentId}/share`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -168,9 +167,8 @@ export const db = {
     if (supabase) {
       const { data: { session } } = await supabase.auth.getSession();
       const token = session?.access_token;
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
       
-      const response = await fetch(`${backendUrl}/api/documents/${documentId}/share/${userId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/documents/${documentId}/share/${userId}`, {
         method: 'DELETE',
         headers: {
           ...(token ? { 'Authorization': `Bearer ${token}` } : {})
@@ -188,8 +186,7 @@ export const db = {
       const { data: { session } } = await supabase.auth.getSession();
       const token = session?.access_token;
       
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
-      const response = await fetch(`${backendUrl}/api/documents/${documentId}/shares`, {
+      const response = await fetch(`${API_BASE_URL}/api/documents/${documentId}/shares`, {
         headers: {
           ...(token ? { 'Authorization': `Bearer ${token}` } : {})
         }
