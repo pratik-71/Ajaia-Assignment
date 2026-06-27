@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../lib/AuthContext';
 import { db, type Document, type Share } from '../lib/db';
@@ -6,9 +6,17 @@ import { supabase } from '../lib/supabase';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Underline from '@tiptap/extension-underline';
-import { ArrowLeft, Save, Share2, Bold, Italic, Underline as UnderlineIcon, Heading1, Heading2, List, ListOrdered, CheckCircle2, PenLine, Lock, Globe, Trash2, X } from 'lucide-react';
+import { ArrowLeft, Save, Share2, Bold, Italic, Underline as UnderlineIcon, Heading1, Heading2, List, ListOrdered, CheckCircle2, PenLine, Lock, Globe, Trash2, X, Download, MessageSquare } from 'lucide-react';
+// @ts-ignore
+import html2pdf from 'html2pdf.js';
 import { Header } from '../components/Header';
 import { toast } from 'react-toastify';
+import Mention from '@tiptap/extension-mention';
+import { CommentMark, getSuggestion } from '../components/EditorExtensions';
+
+import 'tippy.js/dist/tippy.css';
+import 'tippy.js/themes/light.css';
+import 'tippy.js/animations/shift-away.css';
 
 export const EditorPage: React.FC = () => {
   const { id: routeId } = useParams<{ id: string }>();
@@ -35,6 +43,9 @@ export const EditorPage: React.FC = () => {
   const [pendingLinkMode, setPendingLinkMode] = useState<'restricted' | 'anyone_with_link' | null>(null);
   const [pendingLinkRole, setPendingLinkRole] = useState<'viewer' | 'editor' | null>(null);
 
+  const [showCommentModal, setShowCommentModal] = useState(false);
+  const [commentInput, setCommentInput] = useState('');
+
   // Initialize pending state when modal opens
   useEffect(() => {
     if (showShareModal && doc) {
@@ -42,6 +53,7 @@ export const EditorPage: React.FC = () => {
       setPendingLinkRole(doc.link_sharing_role as 'viewer' | 'editor' || 'viewer');
     }
   }, [showShareModal, doc]);
+
 
   // Permissions logic
   const isOwner = doc?.owner_uuid === user?.id;
@@ -73,15 +85,48 @@ export const EditorPage: React.FC = () => {
     [id]
   );
 
+  const mentionableUsers = React.useMemo(() => {
+    const emails = [user?.email, ...shares.map(s => s.email)].filter(Boolean) as string[];
+    return Array.from(new Set(emails));
+  }, [user, shares]);
+
+  const mentionableUsersRef = useRef<string[]>([]);
+  useEffect(() => {
+    mentionableUsersRef.current = mentionableUsers;
+  }, [mentionableUsers]);
+
   const editor = useEditor({
-    extensions: [StarterKit, Underline],
+    extensions: [
+      StarterKit, 
+      Underline,
+      CommentMark,
+      Mention.configure({
+        HTMLAttributes: { class: 'mention', style: 'color: var(--primary-color); font-weight: bold; background: var(--bg-secondary); padding: 2px 4px; border-radius: 4px;' },
+        suggestion: getSuggestion(() => mentionableUsersRef.current),
+      })
+    ],
     content: '',
+    editorProps: {
+      handleClick: (view, pos, event) => {
+        const target = event.target as HTMLElement;
+        if (target && target.classList.contains('comment-highlight')) {
+          const commentId = target.getAttribute('data-tippy-content');
+          if (commentId !== null) {
+            setCommentInput(commentId);
+            setShowCommentModal(true);
+            // Optionally could set text selection to the clicked position
+            return true;
+          }
+        }
+        return false;
+      }
+    },
     onUpdate: ({ editor }) => {
       if (doc && canEdit) {
         debouncedSave(editor.getHTML(), title);
       }
     },
-  });
+  }, []);
 
   useEffect(() => {
     if (editor) {
@@ -249,6 +294,31 @@ export const EditorPage: React.FC = () => {
     setShowShareModal(false);
   };
 
+  const handleExportPDF = () => {
+    if (!editor) return;
+    const content = editor.getHTML();
+    
+    // Create a temporary element to hold the content with some basic styling
+    const element = document.createElement('div');
+    element.innerHTML = `
+      <div style="padding: 40px; font-family: sans-serif; line-height: 1.6; color: #333;">
+        <h1 style="margin-bottom: 20px; font-size: 24px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px;">${title || 'Untitled Document'}</h1>
+        ${content}
+      </div>
+    `;
+
+    const opt = {
+      margin:       10,
+      filename:     `${title || 'Document'}.pdf`,
+      image:        { type: 'jpeg' as const, quality: 1 },
+      html2canvas:  { scale: 4, useCORS: true, letterRendering: true },
+      jsPDF:        { unit: 'mm' as const, format: 'a4' as const, orientation: 'portrait' as const }
+    };
+
+    toast.success('Generating High-Quality PDF...');
+    html2pdf().set(opt).from(element).save();
+  };
+
   if (!user || !doc) return <div className="app-container" style={{ padding: '2rem' }}>Loading...</div>;
 
   const leftContent = (
@@ -368,6 +438,9 @@ export const EditorPage: React.FC = () => {
           <Share2 size={16} /> Share
         </button>
       )}
+      <button className="btn btn-secondary" onClick={handleExportPDF}>
+        <Download size={16} /> Export PDF
+      </button>
       {canEdit && (
         <button className="btn btn-primary" onClick={handleManualSave} disabled={isManualSaving}>
           <Save size={16} /> {isManualSaving ? 'Saving' : 'Save'}
@@ -397,6 +470,13 @@ export const EditorPage: React.FC = () => {
               <div style={{ width: '1px', height: '24px', background: 'var(--border-color)', margin: '0 4px' }} />
               <button onClick={() => editor?.chain().focus().toggleBulletList().run()} className={`btn btn-icon ${editor?.isActive('bulletList') ? 'active' : ''}`}><List size={18} /></button>
               <button onClick={() => editor?.chain().focus().toggleOrderedList().run()} className={`btn btn-icon ${editor?.isActive('orderedList') ? 'active' : ''}`}><ListOrdered size={18} /></button>
+              <div style={{ width: '1px', height: '24px', background: 'var(--border-color)', margin: '0 4px' }} />
+              <button onClick={() => {
+                setCommentInput('');
+                setShowCommentModal(true);
+              }} className={`btn btn-icon ${editor?.isActive('comment') ? 'active' : ''}`} title="Add Comment">
+                <MessageSquare size={18} />
+              </button>
             </div>
           )}
           <EditorContent editor={editor} style={{ flex: 1, padding: canEdit ? '0' : '2rem' }} />
@@ -616,6 +696,44 @@ export const EditorPage: React.FC = () => {
           >
             <X size={16} />
           </button>
+        </div>
+      )}
+
+      {showCommentModal && (
+        <div className="modal-overlay" onClick={() => setShowCommentModal(false)} style={{ zIndex: 1000 }}>
+          <div className="modal-content" style={{ width: '400px', maxWidth: '90vw' }} onClick={e => e.stopPropagation()}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+              <h3 style={{ fontWeight: 600, fontSize: '1.25rem', margin: 0 }}>Add a Comment</h3>
+              <button className="btn btn-icon btn-ghost" onClick={() => setShowCommentModal(false)}>
+                <X size={20} />
+              </button>
+            </div>
+            
+            <textarea 
+              className="input" 
+              style={{ width: '100%', minHeight: '100px', resize: 'vertical', marginBottom: '1.5rem' }}
+              placeholder="Enter your comment (it will be saved inline)..."
+              value={commentInput}
+              onChange={e => setCommentInput(e.target.value)}
+              autoFocus
+            />
+            
+            <div className="flex-row gap-3 justify-end">
+              <button className="btn btn-secondary" onClick={() => setShowCommentModal(false)}>Cancel</button>
+              <button 
+                className="btn btn-primary" 
+                onClick={() => {
+                  if (commentInput.trim() && editor) {
+                    editor.chain().focus().setComment(commentInput.trim()).setTextSelection(editor.state.selection.to).run();
+                  }
+                  setShowCommentModal(false);
+                }}
+                disabled={!commentInput.trim()}
+              >
+                Add Comment
+              </button>
+            </div>
+          </div>
         </div>
       )}
 

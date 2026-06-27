@@ -271,8 +271,11 @@ a:hover {
   align-items: center;
 }
 .gap-2 { gap: 0.5rem; }
+.gap-3 { gap: 0.75rem; }
 .gap-4 { gap: 1rem; }
 .justify-between { justify-content: space-between; }
+.justify-end { justify-content: flex-end; }
+.justify-center { justify-content: center; }
 .mb-4 { margin-bottom: 1rem; }
 .mb-8 { margin-bottom: 2rem; }
 .mt-4 { margin-top: 1rem; }
@@ -365,4 +368,31 @@ a:hover {
 .title-input-wrapper:hover .title-edit-icon, 
 .title-input-wrapper:focus-within .title-edit-icon {
   opacity: 1;
+}
+
+/* Comment Highlight and Tooltip */
+.comment-highlight {
+  position: relative;
+  border-bottom: 2px solid #eab308;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.comment-highlight:hover::after {
+  content: attr(data-tippy-content);
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--text-primary);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  z-index: 100;
+  pointer-events: none;
+  margin-top: 4px;
 }
