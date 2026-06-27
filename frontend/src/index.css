@@ -320,3 +320,45 @@ a:hover {
   max-width: 400px;
   box-shadow: var(--shadow-lg);
 }
+
+.title-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+  border: 1px solid transparent;
+}
+
+.title-input-wrapper:hover, .title-input-wrapper:focus-within {
+  background-color: var(--bg-color);
+  border-color: var(--border-color);
+}
+
+.title-input {
+  font-weight: 600;
+  font-size: 1.125rem;
+  border: none;
+  background: transparent;
+  color: var(--text-primary);
+  outline: none;
+  font-family: inherit;
+  min-width: 150px;
+}
+
+.title-input:disabled {
+  color: var(--text-secondary);
+}
+
+.title-edit-icon {
+  color: var(--text-secondary);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.title-input-wrapper:hover .title-edit-icon, 
+.title-input-wrapper:focus-within .title-edit-icon {
+  opacity: 1;
+}

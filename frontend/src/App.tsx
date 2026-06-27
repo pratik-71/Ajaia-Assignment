@@ -30,7 +30,27 @@ function App() {
     <AuthProvider>
       <Router>
         <AppRoutes />
-        <ToastContainer position="bottom-right" />
+        <ToastContainer 
+          position="bottom-center" 
+          autoClose={3000}
+          hideProgressBar={true}
+          closeButton={false}
+          theme="dark"
+          toastStyle={{
+            backgroundColor: '#1e293b',
+            color: '#f8fafc',
+            borderRadius: '100px',
+            boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)',
+            padding: '12px 24px',
+            fontFamily: 'Inter, system-ui, sans-serif',
+            fontWeight: 500,
+            fontSize: '0.95rem',
+            marginBottom: '1rem',
+            textAlign: 'center',
+            display: 'flex',
+            justifyContent: 'center'
+          }}
+        />
       </Router>
     </AuthProvider>
   );

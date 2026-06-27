@@ -20,31 +20,31 @@ describe('Database Fallback (LocalStorage)', () => {
     const newDoc = await db.createDocument({
       title: 'Test Doc',
       content: '<p>Hello</p>',
-      owner_id: ownerId
+      owner_uuid: ownerId
     });
 
-    expect(newDoc.id).toBe('test-uuid-1234');
+    expect(newDoc.document_uuid).toBe('test-uuid-1234');
     expect(newDoc.title).toBe('Test Doc');
 
     // Retrieve doc
     const { owned } = await db.getDocuments(ownerId);
     expect(owned.length).toBe(1);
-    expect(owned[0].id).toBe('test-uuid-1234');
+    expect(owned[0].document_uuid).toBe('test-uuid-1234');
   });
 
   it('shares a document successfully', async () => {
     const ownerId = 'user-1';
-    const targetUserId = 'user-2';
+    const targetUserId = 'target-user';
     
     // Create doc
     const newDoc = await db.createDocument({
       title: 'Shared Doc',
       content: '<p>Secret</p>',
-      owner_id: ownerId
+      owner_uuid: ownerId
     });
 
     // Share doc
-    await db.shareDocument(newDoc.id, targetUserId);
+    await db.shareDocument(newDoc.document_uuid, targetUserId);
 
     // Retrieve shared doc as target user
     const { shared } = await db.getDocuments(targetUserId);
