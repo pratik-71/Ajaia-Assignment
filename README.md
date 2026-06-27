@@ -2,6 +2,8 @@
 
 A lightweight, real-time collaborative document editor built for the Ajaia Full Stack Product Engineer assessment.
 
+**🎥 [View the 5-Minute Video Walkthrough Here](https://www.loom.com/share/794d8f176f4948b98e10d98356777374)**
+
 ## Features Built
 - **Rich-text Editing:** Create, rename, and edit documents with headings, bold, italic, and lists using Tiptap. Auto-saves as you type.
 - **File Uploads:** Instantly convert local `.txt` and `.md` files into rich-text documents.
