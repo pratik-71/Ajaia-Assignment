@@ -31,7 +31,7 @@ npm install
 **2. Environment Variables & Test Users**
 For the reviewers: I have placed the `.env` credentials and a list of pre-configured Test Users in a secure Google Drive folder for your convenience.
 
-📁 **[Access the Environment Credentials and Test Users Here](https://drive.google.com/drive/folders/1rlzRoMyyMI8NAQhBSIpPF8l39dPEcbVtH?usp=sharing)**
+📁 **[Access the Environment Credentials and Test Users Here](https://drive.google.com/drive/folders/1r1zRoMyyMI8NAQhBSIPF8l39dPEcbVtH)**
 
 Please use the values from `env_creds.txt` to populate your `.env` files, and refer to `Test Users.txt` for the credentials of the pre-made accounts to quickly test the collaboration features.
 
