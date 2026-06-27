@@ -12,7 +12,8 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
-app.use('/api/documents', documentRoutes);
+app.use('/api/documents', documentRoutes); // For local development
+app.use('/documents', documentRoutes);     // For Vercel production (since Vercel strips the /api routePrefix)
 
 // Health check endpoint
 app.get('/health', (req, res) => {
