@@ -12,13 +12,13 @@ This folder contains all the materials required for the Ajaia Full Stack Product
 ## What is Working
 - **Everything requested in the core requirements is fully functional.**
 - Document creation, editing, saving, and renaming via the Tiptap rich-text editor.
-- **Inline Commenting:** Highlight text and add persistent comments.
-- **PDF Export:** Export documents to a high-quality PDF format.
 - File upload integration (Turns `.txt` and `.md` files into rich-text documents instantly).
 - Sharing documents with specific users by email address.
 - Full database persistence and identity tracking via Supabase.
 
 ### Stretch Goals Achieved
+- **Inline Commenting:** Highlight text and add persistent comments.
+- **PDF Export:** Export documents to a high-quality PDF format.
 - **Role-based Permissions:** When sharing a document, the owner can explicitly set the recipient as a "Viewer" or an "Editor", and the UI actively locks/unlocks the rich-text editing canvas based on that role.
 - **Real-time Presence:** Connected to a Supabase Realtime WebSocket channel. If multiple users open the same document, their avatars instantly pop up in the header, letting everyone know the document is actively being viewed.
 
