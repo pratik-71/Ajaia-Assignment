@@ -70,7 +70,7 @@ export const CommentMark = Mark.create<CommentOptions>({
           return commands.setMark(this.name, { 'data-comment-id': commentId });
         },
       unsetComment:
-        (commentId) =>
+        (_commentId) =>
         ({ tr, dispatch }) => {
           if (dispatch) {
             tr.removeMark(tr.selection.from, tr.selection.to, this.type);

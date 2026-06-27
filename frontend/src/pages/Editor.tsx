@@ -107,7 +107,7 @@ export const EditorPage: React.FC = () => {
     ],
     content: '',
     editorProps: {
-      handleClick: (view, pos, event) => {
+      handleClick: (_view, _pos, event) => {
         const target = event.target as HTMLElement;
         if (target && target.classList.contains('comment-highlight')) {
           const commentId = target.getAttribute('data-tippy-content');
