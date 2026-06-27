@@ -168,7 +168,7 @@ export const EditorPage: React.FC = () => {
       });
 
     return () => {
-      supabase.removeChannel(channel);
+      supabase?.removeChannel(channel);
     };
   }, [id, user]);
 
@@ -463,7 +463,7 @@ export const EditorPage: React.FC = () => {
                           color: 'var(--text-secondary)'
                         }} 
                         value={share.role} 
-                        onChange={(e) => handleUpdateUserRole(share.email, e.target.value as 'viewer'|'editor')}
+                        onChange={(e) => handleUpdateUserRole(share.email || '', e.target.value as 'viewer'|'editor')}
                       >
                         <option value="viewer">Viewer</option>
                         <option value="editor">Editor</option>

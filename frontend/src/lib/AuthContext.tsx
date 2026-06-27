@@ -21,29 +21,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return;
     }
 
-    // Get initial session and verify user still exists in DB
-    supabase.auth.getUser().then(({ data: { user }, error }) => {
-      if (error || !user) {
-        // If the user doesn't exist on the server anymore, clear the stale local session
-        supabase.auth.signOut().then(() => {
-          setSession(null);
-          setUser(null);
-          setLoading(false);
-        });
-      } else {
-        supabase.auth.getSession().then(({ data: { session } }) => {
-          setSession(session);
-          setUser(user);
-          setLoading(false);
-        });
-      }
-    });
-
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      setUser(session?.user ?? null);
     });
 
     return () => subscription.unsubscribe();
