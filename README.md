@@ -28,20 +28,12 @@ cd ../frontend
 npm install
 ```
 
-**2. Environment Variables**
-Create a `.env` file in the `backend/` folder:
-```env
-SUPABASE_URL=your_supabase_url
-SUPABASE_ANON_KEY=your_anon_key
-SUPABASE_SERVICE_KEY=your_service_key
-PORT=5000
-```
+**2. Environment Variables & Test Users**
+For the reviewers: I have placed the `.env` credentials and a list of pre-configured Test Users in a secure Google Drive folder for your convenience.
 
-Create a `.env` file in the `frontend/` folder:
-```env
-VITE_SUPABASE_URL=your_supabase_url
-VITE_SUPABASE_ANON_KEY=your_anon_key
-```
+📁 **[Access the Environment Credentials and Test Users Here](https://drive.google.com/drive/folders/1rlzRoMyyMI8NAQhBSIpPF8l39dPEcbVtH?usp=sharing)**
+
+Please use the values from `env_creds.txt` to populate your `.env` files, and refer to `Test Users.txt` for the credentials of the pre-made accounts to quickly test the collaboration features.
 
 **3. Run the App**
 You need to start both servers. 
