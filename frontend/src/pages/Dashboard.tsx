@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 import { useAuth } from '../lib/AuthContext';
 import { db, type Document } from '../lib/db';
 import { useNavigate } from 'react-router-dom';
@@ -70,6 +71,14 @@ export const Dashboard: React.FC = () => {
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file || !user) return;
+    
+    const validExtensions = ['.txt', '.md'];
+    const fileExtension = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
+    
+    if (!validExtensions.includes(fileExtension)) {
+      toast.error("Unsupported file format. Please upload a .txt or .md file.");
+      return;
+    }
     
     const reader = new FileReader();
     reader.onload = async (event) => {

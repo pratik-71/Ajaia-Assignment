@@ -6,7 +6,7 @@ import { supabase } from '../lib/supabase';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Underline from '@tiptap/extension-underline';
-import { ArrowLeft, Save, Share2, Bold, Italic, Underline as UnderlineIcon, Heading1, Heading2, List, ListOrdered, CheckCircle2, PenLine, Lock, Globe, Trash2 } from 'lucide-react';
+import { ArrowLeft, Save, Share2, Bold, Italic, Underline as UnderlineIcon, Heading1, Heading2, List, ListOrdered, CheckCircle2, PenLine, Lock, Globe, Trash2, X } from 'lucide-react';
 import { Header } from '../components/Header';
 import { toast } from 'react-toastify';
 
@@ -29,6 +29,7 @@ export const EditorPage: React.FC = () => {
   const [userToRemove, setUserToRemove] = useState<{uuid: string, email: string} | null>(null);
   const [activeUsers, setActiveUsers] = useState<{ id: string, email: string }[]>([]);
   const [hoveredUserId, setHoveredUserId] = useState<string | null>(null);
+  const [dismissedWarning, setDismissedWarning] = useState(false);
   
   // Pending state for General Access (saved on Done)
   const [pendingLinkMode, setPendingLinkMode] = useState<'restricted' | 'anyone_with_link' | null>(null);
@@ -577,6 +578,44 @@ export const EditorPage: React.FC = () => {
               <button className="btn btn-primary" onClick={handleRemoveShare} style={{ flex: 1, background: '#ef4444', color: 'white', border: 'none' }}>Remove</button>
             </div>
           </div>
+        </div>
+      )}
+
+      {activeUsers.length > 0 && !dismissedWarning && (
+        <div style={{
+          position: 'fixed',
+          bottom: '20px',
+          left: '20px',
+          backgroundColor: '#fff3cd',
+          color: '#856404',
+          padding: '12px 16px',
+          borderRadius: '8px',
+          boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px',
+          zIndex: 1000,
+          border: '1px solid #ffeeba',
+          maxWidth: '350px'
+        }}>
+          <span style={{ fontSize: '0.9rem', lineHeight: '1.4' }}>
+            <strong>Warning:</strong> One or more people are working on this document. This can cause conflicts since changes are not synced in real-time.
+          </span>
+          <button 
+            onClick={() => setDismissedWarning(true)}
+            style={{ 
+              background: 'transparent', 
+              border: 'none', 
+              cursor: 'pointer', 
+              color: '#856404', 
+              padding: '4px',
+              display: 'flex',
+              alignItems: 'flex-start',
+              height: '100%'
+            }}
+          >
+            <X size={16} />
+          </button>
         </div>
       )}
 

@@ -42,7 +42,7 @@ export const Header: React.FC<HeaderProps> = ({ leftContent, rightContent }) => 
             {user.user_metadata?.username || user.email}
           </span>
         </div>
-        <button className="btn btn-ghost" onClick={handleLogout} style={{ padding: '0.375rem 0.75rem' }}>
+        <button className="btn btn-ghost" onClick={handleLogout} style={{ padding: '0.375rem 0.75rem', color: 'var(--error-color)' }}>
           <LogOut size={16} /> Logout
         </button>
       </div>
