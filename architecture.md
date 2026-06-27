@@ -9,9 +9,16 @@ The prompt requested a lightweight collaborative document editor built within a 
 3. **Collision Awareness (Stretch Goal):** Since multiple people could edit a document, I prioritized implementing Supabase Realtime Presence. By showing live avatars of who is currently in the document, users naturally avoid editing the exact same paragraph simultaneously.
 
 ## Tradeoffs & What I Deprioritized
-**Full CRDT Real-time Editing:** I intentionally chose *not* to build character-by-character real-time cursors (e.g., using Yjs or Automerge). Building a reliable Operational Transformation / CRDT sync engine with conflict resolution would easily consume the entire 6 hours alone. 
+**Google Docs Style Real-Time Typing:** I intentionally chose *not* to build character-by-character real-time syncing (like Google Docs where you see other people's text cursors moving as they type). Building the complex math algorithms required to merge text perfectly without corrupting the document would easily consume the entire 6 hours alone.
 
-Instead, I implemented a robust **debounced auto-save** architecture. When a user stops typing for 1000ms, their changes are pushed to the database. If another user is in the document (visible via the Presence avatars), they can refresh to pull the latest state. This tradeoff allowed me to meet every single core requirement while still having time to build out file uploads, the UI system, and role-based sharing permissions.
+Instead, I built a much simpler and highly effective **Auto-Save System**:
+- Every time you type, the app notices.
+- Instead of saving immediately, it waits until you stop typing for 1 second.
+- Once you pause, it quietly saves your entire document to the database in one clean request.
+
+Because I built the live "Presence Avatars" (which show you exactly who else is currently viewing the document), users naturally know not to type over each other. If someone else is typing, you can just wait for them to finish, refresh the page, and instantly see their changes. 
+
+Making this specific scope-cut allowed me to meet every single core requirement while still having time to build out file uploads, a beautiful UI, and role-based sharing permissions.
 
 ## Database Schema
 The Supabase PostgreSQL database is structured simply:

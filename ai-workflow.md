@@ -6,17 +6,31 @@
 - Vercel (for deployment )
 
 ## Where AI Materially Sped Up My Work
-The AI fundamentally changed how I approached the 4-6 hour timebox. Because the AI handled the heavy lifting of boilerplate generation, I was able to spend my mental energy strictly on product architecture and UX decision-making. 
-- **Component Scaffolding:** I used the AI to rapidly generate the React UI components (Sidebar, Dashboard, Editor) using standard Tailwind-like utility classes.
-- **Data Parsing:** When implementing the `.txt` and `.md` file upload feature, the AI instantly generated the `FileReader` logic to parse the raw text and structure it into HTML paragraphs (`<p>`) for the Tiptap editor.
-- **Bug Squashing:** When Vercel failed to deploy due to strict TypeScript compilation errors (`tsc -b`), the AI immediately pinpointed the null-safety issues with the Supabase client and patched them across the codebase in seconds.
+The AI fundamentally changed how I approached the 4-6 hour timebox by handling the heavy lifting of boilerplate code. 
+- **Component Scaffolding:** Used AI to rapidly generate the React UI components and layout structures.
+- **Data Logic:** Accelerated the implementation of the file upload feature by having the AI generate the `FileReader` and parsing logic.
+- **Debugging:** Sped up resolving strict TypeScript compilation errors during the deployment phase.
 
 ## What AI-Generated Output I Changed or Rejected
-The AI is a powerful co-pilot, but it still requires human judgment to guide it:
-- **UI Spacing:** The AI initially designed the document header with no gaps between the "Role" dropdown and the "Delete" icon. I had to manually step in, reject the design, and instruct it to use `gap-4` to ensure the interface felt breathable and premium.
-- **Deployment Architecture:** The AI initially struggled with Vercel's beta `experimentalServices` monorepo routing. It tried to overcomplicate the Express routing to handle URL stripping. I intervened to ensure we used a clean `routePrefix` configuration and a simple relative `API_BASE_URL` in the frontend, preventing massive technical debt.
+The AI is a powerful co-pilot, but requires human judgment:
+- **UI & UX Decisions:** I frequently rejected AI-generated layouts when the spacing or aesthetics didn't feel premium, manually overriding it to fix alignments.
+- **Architecture Choices:** The AI sometimes tried to overcomplicate backend routing logic for the deployment. I intervened to ensure we used a simpler, more maintainable structure to avoid technical debt.
 
 ## How I Verified Correctness and Quality
-I treated the AI exactly like a junior engineer on my team: trust, but verify. 
-1. **Side-by-Side Testing:** I verified the real-time presence avatars and the access-control logic by running two separate browser instances (one normal, one Incognito), logging into two different accounts, and sharing a document back and forth.
-2. **Console Monitoring:** I closely monitored the network tab and the Express logs to ensure the debounced auto-save wasn't spamming the database with unnecessary `PUT` requests while typing. 
+I treated the AI like a junior engineer: trust, but verify. 
+1. **Manual Testing:** Verified all access-control logic and real-time features by running two separate browser instances side-by-side with different user accounts.
+2. **Monitoring:** Closely monitored the network tab to ensure the debounced auto-save function wasn't causing unnecessary database writes. 
+
+## The Human-AI Loop (Diagram)
+
+```mermaid
+graph TD
+    A[Human: Defines Requirements & Scope] --> B[ChatGPT: Phase-by-Phase Planning]
+    B --> C[Human: Reviews & Refines Plan]
+    C --> D[Antigravity IDE: Scaffolds UI & Backend]
+    D --> E{Human: Reviews Output}
+    E -- Accepts --> F[Antigravity IDE: Implements Logic]
+    E -- Rejects / Adjusts --> D
+    F --> G[Human: Testing & Verification]
+    G --> H[Vercel: Final Deployment]
+``` 
